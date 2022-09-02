@@ -1,0 +1,41 @@
+* RAUKF applied to SINGLE OLM Model
+
+Thsi repository contains the code used in [CITATION] in order to
+produce the RAUKF results.
+
+#+begin_quote
+~:warning:~ Prior to running either of the python files provided you must ensure
+that the =requirements.txt= is used to install python modules, as well
+that the respective NEURON =.mod= files are compiled prior to
+usage. Steps to do so are provided below:
+#+end_quote
+
+#+begin_src bash
+pip install virtualenv
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cd ./multicompartment
+nrnivmodl
+cd ..
+cd ./comp_opt_essential
+nrnivmodl
+cd ..
+#+end_src
+
+After doing so you can run the code residing within
+=main.py= and =Plot_Comparison.py=.
+
+** Project Organization
+
+| File/Folder        | Description                                          |
+|--------------------+------------------------------------------------------|
+| OLM.py             | Python implementation of SINGLE model                |
+| Plot_Comparison.py | Plots comparison of step current responses           |
+| README.org         | Project description                                  |
+| comp_opt_essential | SINGLE model implementation                          |
+| flake.nix          | Nix flake development shell definition               |
+| img                | Output directory for generated figures               |
+| main.py            | Runs RAUKF state estimation for both SINGLE and FULL |
+| multicompartment   | FULL model implementation                            |
+| requirements.txt   | Pyhton requirements                                  |

@@ -1,0 +1,36 @@
+load_file("nrngui.hoc")
+cell = 1
+paramtype = 3
+modelnum = 1
+load_file("sim_params.hoc")
+load_file("param_active_cond.hoc")
+load_file("AP_clamp.hoc")
+
+celsius=34
+v_init=-74
+
+Ri = PARAM_Ra         // ohm cm
+Cm = PARAM_cm         // uf/cm2
+G_pas = PARAM_g_pas   // ohm cm2
+E_pas = PARAM_e_pas   // mV
+
+NOT_YET_DISPLAYED = 1
+
+    xopen("init_passive.hoc")
+    if (INSERT_IH) {
+        H_dist = PARAM_H_dist  // um
+        xopen("init_Ih.hoc")
+    }
+    if (INSERT_ACTIVES) {
+        xopen("init_active.hoc")
+    }
+
+    finitialize(v_init)
+    if (cvode.active()) {
+      cvode.re_init()
+    } else {
+      fcurrent()
+    }
+    frecord_init()
+    NOT_YET_DISPLAYED = 0
+

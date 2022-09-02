@@ -1,0 +1,61 @@
+/*
+ * NB: All conductance density arguments must be supplied in pS/um^2 units;
+ *     they will be subsequently converted to mho/cm^2 as expected in mod 
+ *     files.
+ * 
+ **** Ih IS NOT DEFINED HERE BUT SEPARATELY IN init_Ih.hoc ****
+ *
+ * Nas, Kdrf, KA, M
+ * 	Maximal conductance densities for these channels (suffix "d" indicates
+ *      dendrite, "s" soma). Axonal compartments get same value as dendrites.
+ *
+*/
+
+func set_gbars() {
+
+  quitflag = 0
+  if (name_declared("Nas")!=5) { printf("ERROR: no Nas!\n") quitflag=1 }
+  if (name_declared("Kdrfs")!=5) { printf("ERROR: no Kdrfs!\n") quitflag=1 }
+  if (name_declared("KA")!=5) { printf("ERROR: no KA!\n") quitflag=1 }
+  if (name_declared("M")!=5) { printf("ERROR: no M!\n") quitflag=1 }
+
+  if (quitflag) {
+    return quitflag
+  }
+
+  // Convert from pS/um^2 given on command-line to mho/cm^2 expected by the model code.
+  /*
+  Nasp = Nas * 10^-4
+  Kdrfp = Kdrf * 10^-4
+  KAp = KA * 10^-4
+  Mp = M * 10^-4
+  */
+  
+  // Test Optimized Parameters
+  Nasp = Nas * 10^-4
+  Kdrfsp = Kdrfs * 10^-4
+  KAp = KA * 10^-4
+  Mp = M * 10^-4
+
+  if (VERBOSE && NOT_YET_DISPLAYED) { printf("*** I have Nas |%g| Kdrfs |%g| KA |%g| M |%g| ***\n", Nas, Kdrfs, KA, M) }
+
+  soma {
+  
+    // Everything in the soma now
+
+      gbar_Ikdrf = Kdrfsp
+      gbar_Ika = KAp
+      gna_Nasoma = Nasp
+	  vshift_Nasoma = Nas_vs
+      gbar_IM = Mp
+
+      if (VERBOSE && NOT_YET_DISPLAYED) {
+        printf("** %s :\n", secname())
+        printf("\tgna_Nasoma = %g\n", gna_Nasoma)
+        printf("\tgbar_Ikdrf = %g\n", gbar_Ikdrf)
+        printf("\tgbar_Ika = %g\n", gbar_Ika)
+        printf("\tgbar_IM = %g\n", gbar_IM)
+      }
+  }
+  return 0 // success
+}

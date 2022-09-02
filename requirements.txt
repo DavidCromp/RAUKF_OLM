@@ -1,0 +1,8 @@
+neuron
+numpy
+scipy
+matplotlib
+seaborn
+pyyaml
+tqdm
+pathos

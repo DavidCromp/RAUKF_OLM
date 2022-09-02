@@ -1,0 +1,58 @@
+/*
+ * Meant to be called from init()
+ * - requires Ih parameters (defined in params.hoc)
+ */
+
+// First insert Ih into sections
+for i=0,PARAM_NUMSEC_SOMA-1 soma[i] {
+        insert Ih
+}
+for i=0,PARAM_NUMSEC_DEND-1 dend[i] {
+        insert Ih
+}
+
+// Determine gkhbar based on H_dist
+soma[0] distance()
+H_area = 0
+forall {
+    if (issection("soma.*")) { // always counted
+        for (x) {
+            H_area = H_area + area(x)
+        }
+    }
+    if (issection("dend.*") && H_dist > 0) {
+        for (x) {
+            if (distance(x) <= H_dist) {
+                H_area = H_area + area(x)
+            }
+        }
+    }
+}
+Gh = (PARAM_Ih_Gh_tot * 1e-9) / (H_area * 1e-8)
+printf("*** CALCULATING gkhbar: for H_dist of %g, we have H_area %g, and Gh = %g !\n", H_dist, H_area, Gh)
+
+soma[0] distance()
+
+forall {
+
+    // Insert Ih in soma and dendrites           
+    if (issection("soma.*") || (issection("dend.*"))) {
+        eh = PARAM_Ih_eh
+        t1_Ih = PARAM_Ih_t1
+        t2_Ih = PARAM_Ih_t2
+        t3_Ih = PARAM_Ih_t3
+        t4_Ih = PARAM_Ih_t4
+        t5_Ih = PARAM_Ih_t5
+        v_half_Ih = PARAM_Ih_v_half
+        k_Ih = PARAM_Ih_k
+        
+        for (x) {
+            if (distance(x) <= H_dist || issection("soma.*")) {
+                gkhbar_Ih(x) = Gh
+                if (VERBOSE && NOT_YET_DISPLAYED) { printf("*** GIVING gkhbar_Ih %g to %s.v(%g) at distance %g \n", gkhbar_Ih(x), secname(), x, distance(x)) }
+            } else {
+                gkhbar_Ih(x) = 0
+            }
+        }            
+    }
+}

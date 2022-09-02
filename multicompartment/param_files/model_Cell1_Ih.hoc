@@ -1,0 +1,27 @@
+// Experimental parameters
+PARAM_ic_hold_amp=-0.0280385 // -120 pA TTX
+
+// Passive parameters
+PARAM_g_pas=7.5833e-06
+PARAM_e_pas=-64.640
+PARAM_Ra=125.24
+PARAM_cm=0.27008
+
+// Ih parameters
+PARAM_Ih_eh = -34.0056
+PARAM_Ih_v_half = -103.69
+PARAM_Ih_k = 9.9995804
+PARAM_Ih_Gh_tot = 3.1231699
+
+PARAM_Ih_t1 = 8.5657797
+PARAM_Ih_t2 = 0.0296317
+PARAM_Ih_t3 = -6.9145
+PARAM_Ih_t4 = 0.1803
+PARAM_Ih_t5 = 4.3566601e-05
+
+PARAM_H_dist = 1250
+
+// Morphological information
+PARAM_NUMSEC_SOMA=3
+PARAM_NUMSEC_DEND=99
+PARAM_NUMSEC_AXON=7

@@ -1,0 +1,12 @@
+objref ic_hold
+access soma[0]
+ic_hold = new IClamp(0.5)
+ic_hold.del = 0
+ic_hold.dur = tstop
+ic_hold.amp = PARAM_ic_hold_amp
+
+objref ic_step
+ic_step = new IClamp(0.5)
+ic_step.del = 1000
+ic_step.dur = 2000
+ic_step.amp = PARAM_ic_step_amp

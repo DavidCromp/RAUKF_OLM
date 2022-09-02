@@ -1,0 +1,45 @@
+VERBOSE = 1
+tstop = 4000
+PARAM_ic_step_amp=0     // Current clamp injection (nA)
+
+cvode_active(1)
+cvode.atol(1e-05)
+
+strdef cellname
+if (cell == 1) {
+    load_file("morph/Cell1.hoc")
+    cellname = "Cell1"
+} else if (cell == 2) {
+    load_file("morph/Cell2.hoc")
+    cellname = "Cell2"
+} else if (cell == 3) {
+    load_file("morph/Cell3.hoc")
+    cellname = "Cell3"
+} else {
+
+    // No cell provided, terminate
+    printf("ERROR: no cell parameter provided!\n")
+    quit()
+}
+
+strdef param_path
+if (paramtype == 1) { // PASSIVE
+    sprint(param_path, "param_files/model_%s_passive.hoc", cellname)
+    INSERT_IH=0
+    INSERT_ACTIVES=0
+} else if (paramtype == 2) { // PASSIVE + Ih
+    sprint(param_path, "param_files/model_%s_Ih.hoc", cellname)
+    INSERT_IH=1
+    INSERT_ACTIVES=0
+} else if (paramtype == 3) { // PASSIVE + Ih + SPIKING CURRENTS
+    sprint(param_path, "param_files/model_%s_spiking.hoc", cellname)
+    INSERT_IH=1
+    INSERT_ACTIVES=1
+} else {
+
+    // No paramtype provided, terminate
+    printf("ERROR: no paramtype parameter provided!\n")
+    quit()
+}
+load_file(param_path)
+

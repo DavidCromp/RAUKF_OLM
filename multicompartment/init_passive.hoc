@@ -1,0 +1,25 @@
+for i=0,PARAM_NUMSEC_SOMA-1 soma[i] {
+    insert passsd
+    g_passsd=G_pas
+    erev_passsd=E_pas
+    Ra = Ri
+    cm = Cm
+}
+
+for i=0,PARAM_NUMSEC_DEND-1 dend[i] {
+    insert passsd
+    g_passsd=G_pas
+    erev_passsd=E_pas
+    Ra = Ri
+    cm = Cm
+}
+
+for i=0,PARAM_NUMSEC_AXON-1 axon[i] {
+    insert passaxon
+    g_passaxon=G_pas
+    erev_passaxon=E_pas
+    Ra = Ri
+    cm = Cm
+} 
+
+geom_nseg()

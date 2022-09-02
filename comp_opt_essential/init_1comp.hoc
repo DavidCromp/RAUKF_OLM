@@ -1,0 +1,117 @@
+// On the morphology basis of morph 10, absorbed the calcium-less way in morph 9.5.4.
+// MORPH 10.5.3-S
+// Changed only surface area to fit, conductance values from original's soma
+
+// 2022 summer: using justified/optimized gbar values
+
+load_file("nrngui.hoc")
+
+//sim_params
+
+VERBOSE = 1
+tstop = 4000
+PARAM_ic_step_amp = 0.03    // Current clamp injection (nA)
+
+cvode_active(1)
+cvode.atol(1e-05)
+NOT_YET_DISPLAYED = 1
+
+create soma
+
+soma {
+    L = 357
+    diam = 28
+    nseg = 1
+}
+
+//model_Cell1_spiking
+
+// Experimental parameters
+PARAM_ic_hold_amp= 0 // 0.00083929 // -120 pA DNQX
+
+// Passive parameters
+PARAM_g_pas=7.5833e-06
+PARAM_e_pas=-64.640
+PARAM_Ra=125.24
+PARAM_cm=0.27008
+// PARAM_cm=1
+
+// Ih parameters
+PARAM_Ih_eh = -34.0056
+PARAM_Ih_v_half = -103.69
+PARAM_Ih_k = 9.9995804
+PARAM_Ih_Gh_tot = 3.1231699
+
+PARAM_Ih_t1 = 8.5657797
+PARAM_Ih_t2 = 0.0296317
+PARAM_Ih_t3 = -6.9145
+PARAM_Ih_t4 = 0.1803
+PARAM_Ih_t5 = 4.3566601e-05
+
+H_dist = 1250
+
+// Maximum conductance densities for active channels
+
+// Optimized conductances
+	Nas=74.10667249586207
+	Nas_vs=-4.830346371483079
+	Kdrfs=127.25184659083075
+	KA=70.16860025297115
+	M=0.16916079274301054
+
+load_file("param_active.hoc")
+
+//init_active and init_passive
+
+celsius=34
+v_init=-74
+
+Ri = PARAM_Ra         // ohm cm
+Cm = PARAM_cm        // uf/cm2
+G_pas = PARAM_g_pas // ohm cm2
+E_pas = PARAM_e_pas   // mV
+PARAM_GBAR_H = 1.06309e-5
+
+soma {
+	insert passsd
+	insert IM
+	insert Ikdrf
+	insert Ika
+	insert Nasoma
+
+    g_passsd=G_pas
+    erev_passsd=E_pas
+
+    // Set up h-channel
+    insert Ih
+    eh = PARAM_Ih_eh // Note: Should be eh_Ih, otherwise does nothing
+    t1_Ih = PARAM_Ih_t1
+    t2_Ih = PARAM_Ih_t2
+    t3_Ih = PARAM_Ih_t3
+    t4_Ih = PARAM_Ih_t4
+    t5_Ih = PARAM_Ih_t5
+    v_half_Ih = PARAM_Ih_v_half
+    k_Ih = PARAM_Ih_k
+    gkhbar_Ih = PARAM_GBAR_H
+
+    // Other parameters of neuron
+    Ra = 20
+    cm = Cm
+    na=90
+    ek=-95
+}
+
+set_gbars()
+
+//params
+
+load_file("AP_clamp_1comp.hoc")
+
+    finitialize(v_init)
+    if (cvode.active()) {
+      cvode.re_init()
+    } else {
+      fcurrent()
+    }
+    frecord_init()
+    NOT_YET_DISPLAYED = 0

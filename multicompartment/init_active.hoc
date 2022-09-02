@@ -1,0 +1,35 @@
+for i=0,PARAM_NUMSEC_SOMA-1 soma[i] {
+	insert passsd
+	insert IM
+	insert Ikdrf
+	insert Ikdrs
+	insert Ika
+	insert Nasoma
+	ena=90
+	ek=-95
+}
+
+for i=0,PARAM_NUMSEC_DEND-1 dend[i] {
+	insert passsd
+	insert IM
+	insert Ikdrf
+	insert Ikdrs
+	insert Ika
+	insert cal
+	insert cad
+	insert cat
+	insert kca
+	insert Nadend
+	ena=90
+	ek=-95
+}
+
+for i=0,PARAM_NUMSEC_AXON-1 axon[i] {
+	insert Ikdrfaxon
+	insert Ikdrsaxon
+	insert Naaxon
+	ena=90
+	ek=-95
+} 
+
+set_gbars()

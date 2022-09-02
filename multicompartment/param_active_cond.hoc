@@ -1,0 +1,131 @@
+/*
+ * NB: All conductance density arguments must be supplied in pS/um^2 units;
+ *     they will be subsequently converted to mho/cm^2 as expected in mod 
+ *     files.
+ * 
+ **** Ih IS NOT DEFINED HERE BUT SEPARATELY IN init_Ih.hoc ****
+ *
+ * Nad, Nas, Kdrf, Kdrs, KA, CaL, CaT, AHP, M
+ * 	Maximal conductance densities for these channels (suffix "d" indicates
+ *      dendrite, "s" soma). Axonal compartments get same value as dendrites.
+ *
+*/
+
+func set_gbars() {
+
+  quitflag = 0
+  if (name_declared("Nad")!=5) { printf("ERROR: no Nad!\n") quitflag=1 }
+  if (name_declared("Nas")!=5) { printf("ERROR: no Nas!\n") quitflag=1 }
+  if (name_declared("Kdrfs")!=5) { printf("ERROR: no Kdrfs!\n") quitflag=1 }
+  if (name_declared("Kdrss")!=5) { printf("ERROR: no Kdrss!\n") quitflag=1 }
+  if (name_declared("Kdrfd")!=5) { printf("ERROR: no Kdrfd!\n") quitflag=1 }
+  if (name_declared("Kdrsd")!=5) { printf("ERROR: no Kdrsd!\n") quitflag=1 }
+  if (name_declared("Kdrfa")!=5) { printf("ERROR: no Kdrfa!\n") quitflag=1 }
+  if (name_declared("Kdrsa")!=5) { printf("ERROR: no Kdrsa!\n") quitflag=1 }
+  if (name_declared("KA")!=5) { printf("ERROR: no KA!\n") quitflag=1 }
+  if (name_declared("CaL")!=5) { printf("ERROR: no CaL!\n") quitflag=1 }
+  if (name_declared("CaT")!=5) { printf("ERROR: no CaT!\n") quitflag=1 }
+  if (name_declared("AHP")!=5) { printf("ERROR: no AHP!\n") quitflag=1 }
+  if (name_declared("M")!=5) { printf("ERROR: no M!\n") quitflag=1 }
+
+  if (quitflag) {
+    return quitflag
+  }
+
+  // Convert from pS/um^2 given on command-line to mho/cm^2 expected by the model code.
+  /*
+  Nadp = Nad * 10^-4
+  Nasp = Nas * 10^-4
+  Kdrfp = Kdrf * 10^-4
+  Kdrsp = Kdrs * 10^-4
+  KAp = KA * 10^-4
+  CaLp = CaL * 10^-4
+  CaTp = CaT * 10^-4
+  AHPp = AHP * 10^-4
+  Mp = M * 10^-4
+  */
+  
+  // Test Optimized Parameters
+  Nadp = Nad * 10^-4
+  Nasp = Nas * 10^-4
+  Naap = Naa * 10^-4
+  Kdrfsp = Kdrfs * 10^-4
+  Kdrfdp = Kdrfd * 10^-4
+  Kdrfap = Kdrfa * 10^-4
+  Kdrssp = Kdrss * 10^-4 * 0
+  Kdrsdp = Kdrsd * 10^-4 * 0
+  Kdrsap = Kdrsa * 10^-4 * 0
+  KAp = KA * 10^-4
+  CaLp = CaL * 10^-4
+  CaTp = CaT * 10^-4
+  AHPp = AHP * 10^-4
+  Mp = M * 10^-4
+
+  if (VERBOSE && NOT_YET_DISPLAYED) { printf("*** I have Nad |%g| Nas |%g| Kdrfs |%g| Kdrss |%g| Kdrfd |%g| Kdrsd |%g| Kdrfa |%g| Kdrsa |%g| KA |%g| CaL |%g| CaT |%g| AHP |%g| M |%g| ***\n", Nad, Nas, Kdrfs, Kdrss, Kdrfd, Kdrsd, Kdrfa, Kdrsa, KA, CaL, CaT, AHP, M) }
+
+  soma[0] distance() //sets soma[0](0) as origin
+
+  forsec all {
+  
+    // Somatic compartments
+    if (issection("soma.*")) {
+      gbar_Ikdrf = Kdrfsp
+      gbar_Ikdrs = Kdrssp
+      gbar_Ika = KAp
+      gna_Nasoma = Nasp
+	  vshift_Nasoma = Nas_vs
+      gbar_IM = Mp
+
+      if (VERBOSE && NOT_YET_DISPLAYED) {
+        printf("** %s :\n", secname())
+        printf("\tgna_Nasoma = %g\n", gna_Nasoma)
+        printf("\tgbar_Ikdrf = %g\n", gbar_Ikdrf)
+        printf("\tgbar_Ikdrs = %g\n", gbar_Ikdrs)
+        printf("\tgbar_Ika = %g\n", gbar_Ika)
+        printf("\tgbar_IM = %g\n", gbar_IM)
+      }
+    }
+
+    // Dendritic compartments
+    if (issection("dend.*")) {
+      gbar_Ikdrf = Kdrfdp
+      gbar_Ikdrs = Kdrsdp
+      gbar_Ika = KAp
+      gna_Nadend = Nadp
+	  vshift_Nadend = Nad_vs
+      gcalbar_cal = CaLp
+      gbar_cat = CaTp
+      gkbar_kca = AHPp
+      gbar_IM = Mp
+
+      if (VERBOSE && NOT_YET_DISPLAYED) {
+        printf("** %s :\n", secname())
+        printf("\tgna_Nadend = %g\n", gna_Nadend)
+        printf("\tgbar_Ikdrf = %g\n", gbar_Ikdrf)
+        printf("\tgbar_Ikdrs = %g\n", gbar_Ikdrs)
+        printf("\tgbar_Ika = %g\n", gbar_Ika)
+        printf("\tgcalbar_cal = %g\n", gcalbar_cal)
+        printf("\tgbar_cat = %g\n", gbar_cat)
+        printf("\tgkbar_kca = %g\n", gkbar_kca)
+        printf("\tgbar_IM = %g\n", gbar_IM)
+      }
+    }
+
+    // Axonal compartments
+    if (issection("axon.*")) {
+      gbar_Ikdrfaxon = Kdrfap
+      gbar_Ikdrsaxon = Kdrsap
+      gna_Naaxon = Naap
+	  vshift_Naaxon = Naa_vs
+
+      if (VERBOSE && NOT_YET_DISPLAYED) {
+        printf("** %s :\n", secname())
+        printf("\tgna_Naaxon = %g\n", gna_Naaxon)
+        printf("\tgbar_Ikdrfaxon = %g\n", gbar_Ikdrfaxon)
+        printf("\tgbar_Ikdrsaxon = %g\n", gbar_Ikdrsaxon)
+      }
+    }
+
+  }
+  return 0 // success
+}

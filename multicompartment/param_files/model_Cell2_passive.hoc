@@ -1,0 +1,13 @@
+// Experimental parameters
+PARAM_ic_hold_amp=-0.0554768 // -120pA ZD7288
+
+// Passive parameters
+PARAM_g_pas=9.242697014e-06
+PARAM_e_pas=-54.7
+PARAM_Ra=285.7836439
+PARAM_cm=0.2799404308
+
+// Morphological information
+PARAM_NUMSEC_SOMA=6
+PARAM_NUMSEC_DEND=117
+PARAM_NUMSEC_AXON=7
